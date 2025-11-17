@@ -114,6 +114,7 @@
         .options-group label { display: flex; align-items: center; font-weight: 400; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
         .options-group label:hover { background-color: #eef5ff; }
         .options-group input[type="checkbox"] { width: 1.15em; height: 1.15em; margin-right: 0.75rem; accent-color: var(--primary-blue); }
+        .other-option-group input[type="text"] { margin-left: 2.15em; width: calc(100% - 2.15em); }
         #area-placeholder { background-color: var(--light-gray); padding: 1rem; border-radius: 6px; color: var(--text-muted); font-size: 0.9rem; }
         
         .navigation-buttons {
@@ -178,9 +179,9 @@
                     <div class="form-step active">
                         <div class="section">
                             <h2><i class="fa-solid fa-user-circle"></i> Sección 1: Información General</h2>
-                            <div class="field-group"><label for="nombre" class="field-label">1. Nombre completo <span class="required-star">*</span></label><input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre y apellido"></div>
-                            <div class="field-group"><label for="cargo" class="field-label">2. Cargo o puesto <span class="required-star">*</span></label><input type="text" id="cargo" name="cargo" placeholder="Ej: Coordinador Académico"></div>
-                            <div class="field-group"><label for="area" class="field-label">3. Área de trabajo <span class="required-star">*</span></label><select id="area" name="area"><option value="" disabled selected>Seleccione su área...</option><option value="Administracion y Finanzas">Administración y Finanzas</option><option value="Admisiones y Marketing">Admisiones y Marketing</option><option value="Servicio al Estudiante">Servicio al Estudiante</option><option value="Asuntos Academicos">Asuntos Académicos</option><option value="Educacion Continua">División de Educación Continua</option></select></div>
+                            <div class="field-group"><label for="nombre" class="field-label">1. Nombre completo <span class="required-star">*</span></label><input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre y apellido" required></div>
+                            <div class="field-group"><label for="cargo" class="field-label">2. Cargo o puesto <span class="required-star">*</span></label><input type="text" id="cargo" name="cargo" placeholder="Ej: Coordinador Académico" required></div>
+                            <div class="field-group"><label for="area" class="field-label">3. Área de trabajo <span class="required-star">*</span></label><select id="area" name="area" required><option value="" disabled selected>Seleccione su área...</option><option value="Administracion y Finanzas">Administración y Finanzas</option><option value="Admisiones y Marketing">Admisiones y Marketing</option><option value="Servicio al Estudiante">Servicio al Estudiante</option><option value="Asuntos Academicos">Asuntos Académicos</option><option value="Educacion Continua">División de Educación Continua</option></select></div>
                         </div>
                     </div>
                     <!-- PASO 2: NECESIDADES GENERALES -->
@@ -188,7 +189,18 @@
                         <div class="section">
                             <h2><i class="fa-solid fa-lightbulb"></i> Sección 2: Necesidades de Capacitación General</h2>
                             <label class="field-label">4. ¿Qué tipo de capacitación considera más necesaria? <span class="required-star">*</span><br><small>Seleccione 3 opciones.</small></label>
-                            <div class="options-group" id="necesidadesGenerales"><label><input type="checkbox" name="generales" value="Identidad Institucional"> Identidad Institucional y programas oficiales</label><label><input type="checkbox" name="generales" value="Herramientas digitales"> Herramientas digitales y tecnológicas</label><label><input type="checkbox" name="generales" value="Atencion al cliente"> Atención al cliente</label><label><input type="checkbox" name="generales" value="Comunicacion efectiva"> Comunicación efectiva y Relaciones Interpersonales</label><label><input type="checkbox" name="generales" value="Liderazgo y trabajo en equipo"> Liderazgo y trabajo en equipo</label><label><input type="checkbox" name="generales" value="Habilidades Blandas"> Habilidades Blandas y Desarrollo Personal</label></div>
+                            <div class="options-group" id="necesidadesGenerales">
+                                <label><input type="checkbox" name="generales" value="Identidad Institucional y programas oficiales"> Identidad Institucional y programas oficiales</label>
+                                <label><input type="checkbox" name="generales" value="Herramientas digitales y tecnológicas"> Herramientas digitales y tecnológicas</label>
+                                <label><input type="checkbox" name="generales" value="Atención al cliente"> Atención al cliente</label>
+                                <label><input type="checkbox" name="generales" value="Comunicación efectiva y Relaciones Interpersonales"> Comunicación efectiva y Relaciones Interpersonales</label>
+                                <label><input type="checkbox" name="generales" value="Liderazgo y trabajo en equipo"> Liderazgo y trabajo en equipo</label>
+                                <label><input type="checkbox" name="generales" value="Habilidades Blandas y Desarrollo Personal"> Habilidades Blandas y Desarrollo Personal</label>
+                                <div class="other-option-group">
+                                    <label><input type="checkbox" name="generales" value="Otra"> Otra</label>
+                                    <input type="text" id="otraGeneralTexto" name="otraGeneralTexto" placeholder="Por favor, especifique" style="display: none; margin-top: 5px;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- PASO 3: NECESIDADES ESPECÍFICAS -->
@@ -205,7 +217,7 @@
                         <div class="section">
                             <h2><i class="fa-solid fa-comments"></i> Sección 4: Comentarios Adicionales</h2>
                             <label for="comentarios" class="field-label">6. Comentarios o sugerencias adicionales (Opcional):</label>
-                            <textarea id="comentarios" name="comentarios" placeholder="Escriba aquí sus comentarios..."></textarea>
+                            <textarea id="comentarios" name="comentarios" placeholder="Escriba aquí sus comentarios..." rows="4"></textarea>
                         </div>
                     </div>
                 </div>
@@ -237,17 +249,55 @@
 
         let currentStep = 0;
 
-        // --- DATOS DE OPCIONES ESPECÍFICAS ---
+        // --- DATOS DE OPCIONES ESPECÍFICAS (COMPLETOS) ---
         const specificOptions = {
-            'Administracion y Finanzas': [{ value: 'Gestión presupuestal', label: 'Gestión presupuestal' },{ value: 'Gestión financiera', label: 'Gestión financiera' },{ value: 'Gestión de RRHH', label: 'Gestión de recursos humanos' },{ value: 'Automatización', label: 'Uso de herramientas digitales y automatizaciones' },{ value: 'Logística', label: 'Logística y adquisiciones' },{ value: 'Normativa FDCPA', label: 'Normativa de Prácticas Justas de Cobro de Deudas (FDCPA)' },{ value: 'Contabilidad US GAAP', label: 'Principios de Contabilidad (US GAAP)' }],
-            'Admisiones y Marketing': [{ value: 'Marketing digital', label: 'Marketing digital y redes sociales' },{ value: 'Análisis de datos', label: 'Análisis de datos y métricas de captación' },{ value: 'Técnicas de ventas', label: 'Técnicas de ventas y cierre de ventas' },{ value: 'Uso de CRM', label: 'Uso de CRM y bases de datos de postulantes' }],
-            'Servicio al Estudiante': [{ value: 'Resolución de conflictos', label: 'Atención al estudiante y resolución de conflictos' },{ value: 'Comunicación empática', label: 'Comunicación empática y asertiva' },{ value: 'Bienestar estudiantil', label: 'Gestión del bienestar estudiantil' }],
-            'Asuntos Academicos': [{ value: 'Gestión académica', label: 'Gestión académica y planificación curricular' },{ value: 'Evaluación de aprendizajes', label: 'Evaluación de aprendizajes' },{ value: 'Plataformas educativas', label: 'Uso de plataformas educativas y herramientas virtuales' }],
-            'Educacion Continua': [{ value: 'Diseño de programas', label: 'Diseño y gestión de programas de educación continua' },{ value: 'Alianzas estratégicas', label: 'Alianzas estratégicas y vinculación con empresas' },{ value: 'Marketing de cursos', label: 'Marketing y promoción de cursos cortos' }]
+            'Administracion y Finanzas': [
+                { value: 'Gestión presupuestal', label: 'Gestión presupuestal' },
+                { value: 'Gestión financiera', label: 'Gestión financiera' },
+                { value: 'Gestión de RRHH', label: 'Gestión de recursos humanos' },
+                { value: 'Automatización', label: 'Uso de herramientas digitales y automatizaciones' },
+                { value: 'Logística y adquisiciones', label: 'Logística y adquisiciones' },
+                { value: 'Normativa FDCPA', label: 'Normativa de Prácticas Justas de Cobro de Deudas (FDCPA)' },
+                { value: 'Contabilidad US GAAP', label: 'Principios de Contabilidad Generalmente Aceptados (US GAAP)' }
+            ],
+            'Admisiones y Marketing': [
+                { value: 'Marketing digital y redes sociales', label: 'Marketing digital y redes sociales' },
+                { value: 'Análisis de datos y métricas', label: 'Análisis de datos y métricas de captación' },
+                { value: 'Comunicación institucional', label: 'Estrategias de comunicación institucional' },
+                { value: 'Branding y posicionamiento', label: 'Branding y posicionamiento' },
+                { value: 'Actualización de sitios web', label: 'Actualización de sitios web' },
+                { value: 'Creación de contenido digital', label: 'Creación de contenido digital' },
+                { value: 'Técnicas de ventas', label: 'Técnicas de ventas y cierre de ventas' },
+                { value: 'Atención al cliente y objeciones', label: 'Atención al cliente y manejo de objeciones' },
+                { value: 'Uso de CRM', label: 'Uso de CRM y bases de datos de postulantes' },
+                { value: 'Captación y retención', label: 'Estrategias de captación y retención de estudiantes' }
+            ],
+            'Servicio al Estudiante': [
+                { value: 'Atención y resolución de conflictos', label: 'Atención al estudiante y resolución de conflictos' },
+                { value: 'Comunicación empática y asertiva', label: 'Comunicación empática y asertiva' },
+                { value: 'Seguimiento académico y administrativo', label: 'Procesos de seguimiento académico y administrativo' },
+                { value: 'Manejo de reclamos', label: 'Manejo de reclamos y situaciones difíciles' },
+                { value: 'Gestión del bienestar estudiantil', label: 'Gestión del bienestar estudiantil' },
+                { value: 'Uso de sistemas institucionales', label: 'Uso de sistemas institucionales de gestión' }
+            ],
+            'Asuntos Academicos': [
+                { value: 'Gestión académica y curricular', label: 'Gestión académica y planificación curricular' },
+                { value: 'Evaluación de aprendizajes', label: 'Evaluación de aprendizajes' },
+                { value: 'Plataformas educativas y virtuales', label: 'Uso de plataformas educativas y herramientas virtuales' },
+                { value: 'Comunicación con docentes y estudiantes', label: 'Comunicación efectiva con docentes y estudiantes' },
+                { value: 'Innovación pedagógica', label: 'Innovación pedagógica y metodologías activas' },
+                { value: 'Plataformas de aprendizaje en línea', label: 'Plataformas de aprendizaje en línea' }
+            ],
+            'Educacion Continua': [
+                { value: 'Diseño de programas de educación continua', label: 'Diseño y gestión de programas de educación continua' },
+                { value: 'Alianzas estratégicas con empresas', label: 'Alianzas estratégicas y vinculación con empresas' },
+                { value: 'Marketing de cursos cortos', label: 'Marketing y promoción de cursos cortos' },
+                { value: 'Evaluación de impacto', label: 'Evaluación del impacto de la formación continua' },
+                { value: 'Innovación en enseñanza', label: 'Innovación en modalidades de enseñanza' }
+            ]
         };
 
         // --- LÓGICA DEL ASISTENTE (STEPPER) ---
-
         const showStep = (stepIndex) => {
             formSteps.forEach((step, index) => {
                 step.classList.toggle('active', index === stepIndex);
@@ -266,30 +316,36 @@
         
         const updateButtons = (stepIndex) => {
             prevBtn.style.display = stepIndex > 0 ? 'inline-block' : 'none';
-            if (stepIndex === formSteps.length - 1) {
-                nextBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Encuesta';
-            } else {
-                nextBtn.innerHTML = 'Siguiente';
-            }
+            nextBtn.innerHTML = (stepIndex === formSteps.length - 1) ? '<i class="fa-solid fa-paper-plane"></i> Enviar Encuesta' : 'Siguiente';
         };
 
         const validateStep = (stepIndex) => {
             switch(stepIndex) {
                 case 0:
-                    if (document.getElementById('nombre').value.trim() === '' || document.getElementById('cargo').value.trim() === '' || areaSelect.value === '') {
+                    if (!document.getElementById('nombre').value.trim() || !document.getElementById('cargo').value.trim() || !areaSelect.value) {
                         Swal.fire('Campos incompletos', 'Por favor, complete toda la información general.', 'warning');
                         return false;
                     }
                     break;
                 case 1:
-                    if (document.querySelectorAll('input[name="generales"]:checked').length !== CHECKBOX_LIMIT) {
-                        Swal.fire('Selección incorrecta', 'Debe seleccionar 3 opciones de capacitación general.', 'warning');
+                    const generalesChecked = document.querySelectorAll('input[name="generales"]:checked').length;
+                    if (generalesChecked !== CHECKBOX_LIMIT) {
+                        Swal.fire('Selección incorrecta', `Debe seleccionar exactamente ${CHECKBOX_LIMIT} opciones de capacitación general.`, 'warning');
+                        return false;
+                    }
+                    if (document.querySelector('input[name="generales"][value="Otra"]:checked') && !document.getElementById('otraGeneralTexto').value.trim()){
+                        Swal.fire('Campo incompleto', 'Si selecciona "Otra", por favor especifique su respuesta.', 'warning');
                         return false;
                     }
                     break;
                 case 2:
-                    if (document.querySelectorAll('input[name="especificas"]:checked').length !== CHECKBOX_LIMIT) {
-                         Swal.fire('Selección incorrecta', 'Debe seleccionar 3 opciones de capacitación específica para su área.', 'warning');
+                    const especificasChecked = document.querySelectorAll('input[name="especificas"]:checked').length;
+                    if (especificasChecked !== CHECKBOX_LIMIT) {
+                        Swal.fire('Selección incorrecta', `Debe seleccionar exactamente ${CHECKBOX_LIMIT} opciones de capacitación específica.`, 'warning');
+                        return false;
+                    }
+                     if (document.querySelector('input[name="especificas"][value="Otra"]:checked') && !document.getElementById('otraEspecificaTexto').value.trim()){
+                        Swal.fire('Campo incompleto', 'Si selecciona "Otra", por favor especifique su respuesta.', 'warning');
                         return false;
                     }
                     break;
@@ -297,8 +353,7 @@
             return true;
         };
         
-        // --- LÓGICA DE VALIDACIÓN DE FORMULARIO (CHECKBOXES, ETC) ---
-
+        // --- LÓGICA DE VALIDACIÓN DE FORMULARIO ---
         const limitCheckboxes = (selector) => {
             const checkboxes = document.querySelectorAll(selector);
             const checkedCount = document.querySelectorAll(`${selector}:checked`).length;
@@ -312,19 +367,22 @@
                 areaPlaceholder.style.display = 'none';
                 specificOptions[selectedArea].forEach(opt => {
                     const label = document.createElement('label');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox'; checkbox.name = 'especificas'; checkbox.value = opt.value;
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(` ${opt.label}`));
+                    label.innerHTML = `<input type="checkbox" name="especificas" value="${opt.value}"> ${opt.label}`;
                     especificasContainer.appendChild(label);
                 });
+                
+                const otherDiv = document.createElement('div');
+                otherDiv.className = 'other-option-group';
+                otherDiv.innerHTML = `
+                    <label><input type="checkbox" name="especificas" value="Otra"> Otra</label>
+                    <input type="text" id="otraEspecificaTexto" name="otraEspecificaTexto" placeholder="Por favor, especifique" style="display: none; margin-top: 5px;">`;
+                especificasContainer.appendChild(otherDiv);
             } else { 
                 areaPlaceholder.style.display = 'block'; 
             }
         };
         
         // --- EVENT LISTENERS ---
-
         nextBtn.addEventListener('click', () => {
             if (validateStep(currentStep)) {
                 if (currentStep < formSteps.length - 1) {
@@ -342,31 +400,57 @@
                 showStep(currentStep);
             }
         });
-
+        
         document.getElementById('necesidadesGenerales').addEventListener('change', () => limitCheckboxes('input[name="generales"]'));
-        especificasContainer.addEventListener('change', (e) => { if (e.target.type === 'checkbox') limitCheckboxes('input[name="especificas"]'); });
+        especificasContainer.addEventListener('change', (e) => { if (e.target.name === 'especificas') limitCheckboxes('input[name="especificas"]'); });
         areaSelect.addEventListener('change', renderSpecificOptions);
 
-        // --- LÓGICA DE ENVÍO ---
+        document.body.addEventListener('change', function(e) {
+            if (e.target.matches('input[name="generales"][value="Otra"]')) {
+                document.getElementById('otraGeneralTexto').style.display = e.target.checked ? 'block' : 'none';
+            }
+            if (e.target.matches('input[name="especificas"][value="Otra"]')) {
+                document.getElementById('otraEspecificaTexto').style.display = e.target.checked ? 'block' : 'none';
+            }
+        });
 
+        // --- LÓGICA DE ENVÍO ---
         const submitForm = async () => {
             Swal.fire({ title: 'Enviando encuesta...', text: 'Por favor, espere.', allowOutsideClick: false, showConfirmButton: false, willOpen: () => Swal.showLoading() });
+
+            const generalesSeleccionadas = [...document.querySelectorAll('input[name="generales"]:checked')].map(cb => {
+                if (cb.value === 'Otra') {
+                    return `Otra: ${document.getElementById('otraGeneralTexto').value.trim()}`;
+                }
+                return cb.value;
+            });
+            
+            const especificasSeleccionadas = [...document.querySelectorAll('input[name="especificas"]:checked')].map(cb => {
+                if (cb.value === 'Otra') {
+                    return `Otra: ${document.getElementById('otraEspecificaTexto').value.trim()}`;
+                }
+                return cb.value;
+            });
+
             const data = {
                 nombre: document.getElementById('nombre').value,
                 cargo: document.getElementById('cargo').value,
                 area: areaSelect.value,
-                necesidadesGenerales: [...document.querySelectorAll('input[name="generales"]:checked')].map(cb => cb.value),
-                necesidadesEspecificas: [...document.querySelectorAll('input[name="especificas"]:checked')].map(cb => cb.value),
+                necesidadesGenerales: generalesSeleccionadas,
+                necesidadesEspecificas: especificasSeleccionadas,
                 comentarios: document.getElementById('comentarios').value
             };
+
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
                 if (!response.ok) throw new Error(`El servidor respondió con un error: ${response.status}`);
                 const result = await response.json();
                 if (!result.success) throw new Error(result.error || 'El script devolvió un error desconocido.');
+                
                 Swal.fire({ title: '¡Éxito!', text: 'Tu encuesta ha sido registrada. ¡Gracias!', icon: 'success', confirmButtonText: 'Cerrar' }).then(() => { 
                     form.reset(); 
                     renderSpecificOptions(); 
+                    document.getElementById('otraGeneralTexto').style.display = 'none';
                     currentStep = 0;
                     showStep(currentStep);
                 });
